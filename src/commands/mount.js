@@ -19,6 +19,7 @@ module.exports = class extends Command {
     }
 
 
+	
 	async exec(cmd) {
 		const ChildProcess = require("child_process");
 
