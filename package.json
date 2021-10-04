@@ -1,8 +1,8 @@
 {
-  "name": "rpi-remote",
+  "name": "remote-pi",
   "version": "1.0.0",
   "description": "Toolbox for a remote Raspberry Pi in your network",
-  "main": "remotepi.js",
+  "main": "remote-pi.js",
   "scripts": {
     "git-commit": "make git-commit",
     "git-pull": "make git-pull",
@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/meg768/rpi-remote.git"
+    "url": "git+https://github.com/meg768/remote-pi.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/meg768/rpi-remote/issues"
+    "url": "https://github.com/meg768/remote-pi/issues"
   },
-  "homepage": "https://github.com/meg768/rpi-remote#readme",
+  "homepage": "https://github.com/meg768/remote-pi#readme",
   "dependencies": {
     "dotenv": "^8.2.0",
     "yargs": "^16.2.0",

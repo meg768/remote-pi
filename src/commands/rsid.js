@@ -8,14 +8,13 @@ module.exports = class extends Command {
 
     constructor(options) {
 
-        super({command: 'mount [options]', description: 'Mounts a drive', ...options}); 
+        super({command: 'rsid [options]', description: 'Mounts a drive ---', ...options}); 
     }
 
     options(args) {
         super.options(args);
 		args.option('pi',   {describe:'Name of Pi or IP-address', type: 'strig', default:undefined});
 		args.option('user', {describe:'Username on your Pi', type: 'strig', default:'root'});
-		args.option('path', {describe:'Remote location/path on the Pi', type: 'strig', default:'/'});
     }
 
 	async setup() {
@@ -60,32 +59,49 @@ module.exports = class extends Command {
 		catch(error) {
 			throw new Error('sshfs is not installed.');
 		}
-		
+
 		const mkpath = require('yow/mkpath');
 		const os = require('os');
-		const driveName = `${this.argv.user}@${this.argv.pi}`;
 
 		if (!this.argv.pi) {
 			throw new Error('A pi must be specified.');
 		}
 
-		var mountPath = `${os.homedir()}/.sshfs/drives/${driveName}`;
+		 
+		var cmd = `cat ~/.ssh/id_rsa.pub | ssh ${this.argv.user}@${this.argv.pi} 'mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'`;
 
-		// Create directory...
-		mkpath(mountPath);
-
-		var unmountCommand = `umount ${mountPath}`;
-		var mountCommand = `sshfs ${driveName}:${this.argv.path} ${mountPath} -o volname=${driveName} -o allow_other `;
 
 		try {
-			await this.exec(unmountCommand);
+			await this.exec(cmd);
+
 		}
 		catch (error) {
-//			console.log(error.message);
+			throw new Error('Password failed');
+		}
 			
+//		await this.exec(cmd);
+		 
+		 var cat = `ssh ${this.argv.user}@${this.argv.pi} 'cat ~/.ssh/authorized_keys'`;
+		 var contents = await this.exec(cat);
+		contents = contents.split('\n');
+
+		var lines = {}; 
+		contents.forEach(element => {
+			lines[element] = element;
+		});
+
+		var output = [];
+		for (var y in lines) {
+			output.push(y);
 		}
 
- 		await this.exec(mountCommand);
+		output = output.join('\n');
+//		console.log(output);
+
+		this.exec(`ssh ${this.argv.user}@${this.argv.pi} "echo '${output}' >  ~/.ssh/authorized_keys"`);
+
+
+		 console.log(`Now you may login without password using "ssh ${this.argv.user}@${this.argv.pi}".`);
 	}
 
 };
